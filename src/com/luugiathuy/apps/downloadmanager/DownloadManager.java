@@ -10,7 +10,7 @@ public class DownloadManager {
 	
 	// Constant variables
 	private static final int DEFAULT_NUM_CONN_PER_DOWNLOAD = 8;
-	public static final String DEFAULT_OUTPUT_FOLDER = "download/";
+	public static final String DEFAULT_OUTPUT_FOLDER = "";
 
 	// Member variables
 	private int mNumConnPerDownload;

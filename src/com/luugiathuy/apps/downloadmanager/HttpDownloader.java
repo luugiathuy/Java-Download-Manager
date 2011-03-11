@@ -133,6 +133,11 @@ public class HttpDownloader extends Downloader{
 				// connect to server
 				conn.connect();
 				
+				// Make sure the response code is in the 200 range.
+	            if (conn.getResponseCode() / 100 != 2) {
+	                error();
+	            }
+				
 				// get the input stream
 				in = new BufferedInputStream(conn.getInputStream());
 				
