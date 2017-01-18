@@ -28,13 +28,14 @@ package com.luugiathuy.apps.downloadmanager;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
+
 
 public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
 
@@ -45,6 +46,8 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
 	private Downloader mSelectedDownloader;
 	
 	private boolean mIsClearing;
+
+    private static Logger logger = Logger.getLogger(DownloadManagerGUI.class.getName());
 	
 	/** Creates new form DownloadManagerGUI */
     public DownloadManagerGUI() {
@@ -54,13 +57,10 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
     }
     
     private void initialize() {
+
+
     	// Set up table
-    	jtbDownload.getSelectionModel().addListSelectionListener(new
-                ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-                tableSelectionChanged();
-            }
-        });
+    	jtbDownload.getSelectionModel().addListSelectionListener(e -> tableSelectionChanged());
     	
     	// Allow only one row at a time to be selected.
     	jtbDownload.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -73,6 +73,8 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
         // Set table's row height large enough to fit JProgressBar.
         jtbDownload.setRowHeight(
                 (int) renderer.getPreferredSize().getHeight());
+
+
     }
 
     /** This method is called from within the constructor to
@@ -99,53 +101,29 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
         setResizable(false);
 
         jbnAdd.setText("Add Download");
-        jbnAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbnAddActionPerformed(evt);
-            }
-        });
+        jbnAdd.addActionListener(this::jbnAddActionPerformed);
 
         jtbDownload.setModel(mTableModel);
         jScrollPane1.setViewportView(jtbDownload);
 
         jbnPause.setText("Pause");
         jbnPause.setEnabled(false);
-        jbnPause.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbnPauseActionPerformed(evt);
-            }
-        });
+        jbnPause.addActionListener(this::jbnPauseActionPerformed);
 
         jbnRemove.setText("Remove");
         jbnRemove.setEnabled(false);
-        jbnRemove.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbnRemoveActionPerformed(evt);
-            }
-        });
+        jbnRemove.addActionListener(this::jbnRemoveActionPerformed);
 
         jbnCancel.setText("Cancel");
         jbnCancel.setEnabled(false);
-        jbnCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbnCancelActionPerformed(evt);
-            }
-        });
+        jbnCancel.addActionListener(this::jbnCancelActionPerformed);
 
         jbnExit.setText("Exit");
-        jbnExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbnExitActionPerformed(evt);
-            }
-        });
+        jbnExit.addActionListener(this::jbnExitActionPerformed);
 
         jbnResume.setText("Resume");
         jbnResume.setEnabled(false);
-        jbnResume.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jbnResumeActionPerformed(evt);
-            }
-        });
+        jbnResume.addActionListener(this::jbnResumeActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -172,7 +150,7 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jbnCancel, jbnExit, jbnPause, jbnRemove, jbnResume});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, jbnCancel, jbnExit, jbnPause, jbnRemove, jbnResume);
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -313,13 +291,13 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
     	try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
+            e.printStackTrace();
+            logger.severe(e.getMessage());
 		}
-		
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DownloadManagerGUI().setVisible(true);
-            }
-        });
+
+        java.awt.EventQueue.invokeLater(
+                () -> new DownloadManagerGUI().setVisible(true)
+        );
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
