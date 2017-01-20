@@ -25,16 +25,14 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 package com.luugiathuy.apps.downloadmanager;
 
+import javax.swing.*;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
-import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
 
 
 public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
@@ -48,16 +46,27 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
 	private boolean mIsClearing;
 
     private static Logger logger = Logger.getLogger(DownloadManagerGUI.class.getName());
-	
+
+    static {
+        Logger log = LogManager.getLogManager().getLogger("");
+        for (Handler h : log.getHandlers()) {
+            h.setLevel(Level.ALL);
+        }
+
+        Logger logger = Logger.getLogger("com.luugiathuy");
+        for(Handler handler : logger.getHandlers()) handler.setLevel(Level.ALL);
+        logger.setLevel(Level.ALL);
+    }
+
 	/** Creates new form DownloadManagerGUI */
     public DownloadManagerGUI() {
+        logger.finest("DownloadManagerGUI started");
     	mTableModel = new DownloadTableModel();
         initComponents();
         initialize();
     }
     
     private void initialize() {
-
 
     	// Set up table
     	jtbDownload.getSelectionModel().addListSelectionListener(e -> tableSelectionChanged());
@@ -73,8 +82,6 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
         // Set table's row height large enough to fit JProgressBar.
         jtbDownload.setRowHeight(
                 (int) renderer.getPreferredSize().getHeight());
-
-
     }
 
     /** This method is called from within the constructor to
@@ -200,7 +207,8 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
     }//GEN-LAST:event_jbnRemoveActionPerformed
 
     private void jbnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbnExitActionPerformed
-        setVisible(false);
+        logger.finest("Exiting");
+        System.exit(1);
     }//GEN-LAST:event_jbnExitActionPerformed
 
     private void jbnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbnAddActionPerformed
