@@ -45,40 +45,50 @@ public class HttpDownloader extends Downloader{
 		logger.severe("ERROR");
 		setState(ERROR);
 	}
+
+
+	private HttpURLConnection createAndCheckConnection() throws IOException {
+        HttpURLConnection conn = (HttpURLConnection)mURL.openConnection();
+        conn.setConnectTimeout(10000);
+        conn.connect();
+
+        // Make sure the response code is in the 200 range.
+        if (conn.getResponseCode() / 100 != 2) {
+            error();
+        }
+        return conn;
+    }
+
+    private void checkForValidContentLength(HttpURLConnection conn){
+        int contentLength = conn.getContentLength();
+        if (contentLength < 1) {
+            error();
+        }
+
+        if (mFileSize == -1) {
+            mFileSize = contentLength;
+            stateChanged();
+            logger.finest("File size:" + mFileName);
+        }
+    }
 	
 	@Override
 	public void run() {
 		HttpURLConnection conn = null;
 		try {
-			// Open connection to URL
-			conn = (HttpURLConnection)mURL.openConnection();
-			conn.setConnectTimeout(10000);
-			
-			// Connect to server
-			conn.connect();
-			
-			// Make sure the response code is in the 200 range.
-            if (conn.getResponseCode() / 100 != 2) {
-                error();
-            }
-            
+            /**
+             * Opens connection to URL and Connects to the server
+             * then checks the StatusCode
+             */
+            conn = createAndCheckConnection();
+
             // Check for valid content length.
-            int contentLength = conn.getContentLength();
-            if (contentLength < 1) {
-                error();
-            }
-			
-            if (mFileSize == -1) {
-            	mFileSize = contentLength;
-            	stateChanged();
-                logger.finest("File size:" + mFileName);
-            }
+            checkForValidContentLength(conn);
                
             // if the state is DOWNLOADING (no error) -> start downloading
             if (mState == DOWNLOADING) {
             	// check whether we have list of download threads or not, if not -> init download
-            	if (mListDownloadThread.size() == 0)
-            	{  
+            	if (mListDownloadThread.size() == 0) {
             		if (mFileSize > MIN_DOWNLOAD_SIZE) {
 		                // downloading size for each thread
 						int partSize = Math.round(((float)mFileSize / mNumConnections) / BLOCK_SIZE) * BLOCK_SIZE;
@@ -98,8 +108,7 @@ public class HttpDownloader extends Downloader{
 							mListDownloadThread.add(aThread);
 							++i;
 						}
-            		} else
-            		{
+            		} else {
             			HttpDownloadThread aThread = new HttpDownloadThread(1, mURL, mOutputFolder + mFileName, 0, mFileSize);
 						mListDownloadThread.add(aThread);
             		}

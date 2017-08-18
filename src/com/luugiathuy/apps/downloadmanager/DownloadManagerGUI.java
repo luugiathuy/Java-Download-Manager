@@ -55,7 +55,7 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
 
         Logger logger = Logger.getLogger("com.luugiathuy");
         for(Handler handler : logger.getHandlers()) handler.setLevel(Level.ALL);
-        logger.setLevel(Level.ALL);
+            logger.setLevel(Level.ALL);
     }
 
 	/** Creates new form DownloadManagerGUI */
