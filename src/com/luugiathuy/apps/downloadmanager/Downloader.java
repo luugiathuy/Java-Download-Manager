@@ -25,12 +25,17 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 package com.luugiathuy.apps.downloadmanager;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Observable;
+import java.util.logging.Logger;
 
 public abstract class Downloader extends Observable implements Runnable{
-	
+
+	private static Logger logger = Logger.getLogger(Downloader.class.getName());
+
+
 	// Member variables
 	/** The URL to download the file */
 	protected URL mURL;
@@ -74,7 +79,7 @@ public abstract class Downloader extends Observable implements Runnable{
 	
 	/**
 	 * Constructor
-	 * @param fileURL
+	 * @param url
 	 * @param outputFolder
 	 * @param numConnections
 	 */
@@ -85,13 +90,13 @@ public abstract class Downloader extends Observable implements Runnable{
 		
 		// Get the file name from url path
 		String fileURL = url.getFile();
-		mFileName = fileURL.substring(fileURL.lastIndexOf('/') + 1);
-		System.out.println("File name: " + mFileName);
+		mFileName = File.separator +  fileURL.substring(fileURL.lastIndexOf('/') + 1);
+		logger.finest("File name:" + mFileName);
 		mFileSize = -1;
 		mState = DOWNLOADING;
 		mDownloaded = 0;
 		
-		mListDownloadThread = new ArrayList<DownloadThread>();
+		mListDownloadThread = new ArrayList<>();
 	}
 	
 	/**
@@ -122,7 +127,10 @@ public abstract class Downloader extends Observable implements Runnable{
 	public String getURL() {
 		return mURL.toString();
 	}
-	
+
+
+	public String getFileName(){return mFileName;}
+
 	/**
 	 * Get the downloaded file's size
 	 */
@@ -143,6 +151,11 @@ public abstract class Downloader extends Observable implements Runnable{
 	public int getState() {
 		return mState;
 	}
+
+	/**
+	 *
+     */
+	public String getOutputFolder(){return mOutputFolder;}
 	
 	/**
 	 * Set the state of the downloader

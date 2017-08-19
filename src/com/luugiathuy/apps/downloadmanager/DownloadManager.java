@@ -27,6 +27,7 @@ package com.luugiathuy.apps.downloadmanager;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class DownloadManager {
 	
@@ -35,16 +36,21 @@ public class DownloadManager {
 	
 	// Constant variables
 	private static final int DEFAULT_NUM_CONN_PER_DOWNLOAD = 8;
-	public static final String DEFAULT_OUTPUT_FOLDER = "";
+//	public static final String DEFAULT_OUTPUT_FOLDER = "";
+	public static final String DEFAULT_OUTPUT_FOLDER = System.getProperty("user.home");
 
 	// Member variables
 	private int mNumConnPerDownload;
 	private ArrayList<Downloader> mDownloadList;
+
+
+	private static String HTTP_PREFIX = "http://";
+    private static Logger logger = Logger.getLogger(DownloadManager.class.getName());
 	
 	/** Protected constructor */
 	protected DownloadManager() {
 		mNumConnPerDownload = DEFAULT_NUM_CONN_PER_DOWNLOAD;
-		mDownloadList = new ArrayList<Downloader>();
+		mDownloadList = new ArrayList<>();
 	}
 	
 	/**
@@ -57,7 +63,7 @@ public class DownloadManager {
 	/**
 	 * Set the max number of connections per download
 	 */
-	public void SetNumConnPerDownload(int value) {
+	public void setNumConnPerDownload(int value) {
 		mNumConnPerDownload = value;
 	}
 	
@@ -108,14 +114,15 @@ public class DownloadManager {
 	 */
 	public static URL verifyURL(String fileURL) {
 		// Only allow HTTP URLs.
-        if (!fileURL.toLowerCase().startsWith("http://"))
+        if (!fileURL.toLowerCase().startsWith(HTTP_PREFIX))
             return null;
         
         // Verify format of URL.
-        URL verifiedUrl = null;
+        URL verifiedUrl;
         try {
             verifiedUrl = new URL(fileURL);
         } catch (Exception e) {
+            logger.finest("url is not valid");
             return null;
         }
         

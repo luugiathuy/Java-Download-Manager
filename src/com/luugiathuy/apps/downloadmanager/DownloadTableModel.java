@@ -41,12 +41,12 @@ public class DownloadTableModel extends AbstractTableModel implements Observer {
 
 	// These are the names for the table's columns.
     private static final String[] columnNames = {"URL", "Size (KB)",
-    "Progress", "Status"};
+    "Progress", "Status", "Destination"};
     
     // These are the classes for each column's values.
     @SuppressWarnings("rawtypes")
 	private static final Class[] columnClasses = {String.class,
-    	String.class, JProgressBar.class, String.class};
+    	String.class, JProgressBar.class, String.class, String.class};
     
     /**
      *  Add a new download to the table.
@@ -114,6 +114,13 @@ public class DownloadTableModel extends AbstractTableModel implements Observer {
                 return new Float(download.getProgress());
             case 3: // Status
                 return Downloader.STATUSES[download.getState()];
+            case 4 : //Destination
+            {
+                int state = download.getState();
+                if(state == 2 ) return download.getOutputFolder() + download.getFileName();
+                else return "-";
+            }
+
         }
         return "";
     }
