@@ -29,10 +29,7 @@ import javax.swing.*;
 import java.net.URL;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 
 public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
@@ -51,11 +48,15 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
         Logger log = LogManager.getLogManager().getLogger("");
         for (Handler h : log.getHandlers()) {
             h.setLevel(Level.ALL);
+            h.setFormatter(new SimpleFormatter());
         }
 
         Logger logger = Logger.getLogger("com.luugiathuy");
-        for(Handler handler : logger.getHandlers()) handler.setLevel(Level.ALL);
-            logger.setLevel(Level.ALL);
+        for(Handler handler : logger.getHandlers()) {
+            handler.setLevel(Level.ALL);
+            handler.setFormatter(new SimpleFormatter());
+        }
+        logger.setLevel(Level.ALL);
     }
 
 	/** Creates new form DownloadManagerGUI */
@@ -67,6 +68,8 @@ public class DownloadManagerGUI extends javax.swing.JFrame implements Observer{
     }
     
     private void initialize() {
+
+        logger.finest("default download location: " + System.getProperty("user.home"));
 
     	// Set up table
     	jtbDownload.getSelectionModel().addListSelectionListener(e -> tableSelectionChanged());

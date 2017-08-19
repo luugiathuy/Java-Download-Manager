@@ -36,7 +36,8 @@ public class DownloadManager {
 	
 	// Constant variables
 	private static final int DEFAULT_NUM_CONN_PER_DOWNLOAD = 8;
-	public static final String DEFAULT_OUTPUT_FOLDER = "";
+//	public static final String DEFAULT_OUTPUT_FOLDER = "";
+	public static final String DEFAULT_OUTPUT_FOLDER = System.getProperty("user.home");
 
 	// Member variables
 	private int mNumConnPerDownload;

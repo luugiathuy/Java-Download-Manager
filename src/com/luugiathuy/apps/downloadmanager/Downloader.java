@@ -25,6 +25,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 package com.luugiathuy.apps.downloadmanager;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Observable;
@@ -89,7 +90,7 @@ public abstract class Downloader extends Observable implements Runnable{
 		
 		// Get the file name from url path
 		String fileURL = url.getFile();
-		mFileName = fileURL.substring(fileURL.lastIndexOf('/') + 1);
+		mFileName = File.separator +  fileURL.substring(fileURL.lastIndexOf('/') + 1);
 		logger.finest("File name:" + mFileName);
 		mFileSize = -1;
 		mState = DOWNLOADING;
@@ -126,7 +127,10 @@ public abstract class Downloader extends Observable implements Runnable{
 	public String getURL() {
 		return mURL.toString();
 	}
-	
+
+
+	public String getFileName(){return mFileName;}
+
 	/**
 	 * Get the downloaded file's size
 	 */
@@ -147,6 +151,11 @@ public abstract class Downloader extends Observable implements Runnable{
 	public int getState() {
 		return mState;
 	}
+
+	/**
+	 *
+     */
+	public String getOutputFolder(){return mOutputFolder;}
 	
 	/**
 	 * Set the state of the downloader
