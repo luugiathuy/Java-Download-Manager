@@ -26,6 +26,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 package com.luugiathuy.apps.downloadmanager;
 
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -86,6 +87,13 @@ public abstract class Downloader extends Observable implements Runnable{
 		// Get the file name from url path
 		String fileURL = url.getFile();
 		mFileName = fileURL.substring(fileURL.lastIndexOf('/') + 1);
+		
+		// add support for Chinese file name
+		try {
+			mFileName=URLDecoder.decode(mFileName, "UTF-8");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println("File name: " + mFileName);
 		mFileSize = -1;
 		mState = DOWNLOADING;
